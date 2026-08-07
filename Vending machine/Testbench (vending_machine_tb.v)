@@ -1,0 +1,67 @@
+`timescale 1ns/1ps
+
+module vending_machine_tb;
+
+reg clk;
+reg reset;
+reg [1:0] coin;
+
+wire dispense;
+wire [4:0] change;
+
+vending_machine uut(
+    .clk(clk),
+    .reset(reset),
+    .coin(coin),
+    .dispense(dispense),
+    .change(change)
+);
+
+always #5 clk = ~clk;
+
+initial
+begin
+
+clk = 0;
+reset = 1;
+coin = 2'b00;
+
+#10;
+reset = 0;
+
+// Insert ₹5
+coin = 2'b01;
+#10;
+
+// Insert ₹10
+coin = 2'b10;
+#10;
+
+// Insert ₹5
+coin = 2'b01;
+#10;
+
+// No coin
+coin = 2'b00;
+#20;
+
+// Insert ₹20 directly
+coin = 2'b11;
+#10;
+
+coin = 2'b00;
+#20;
+
+$finish;
+
+end
+
+initial
+begin
+
+$monitor("Time=%0t Coin=%b Dispense=%b Change=%d",
+          $time, coin, dispense, change);
+
+end
+
+endmodule

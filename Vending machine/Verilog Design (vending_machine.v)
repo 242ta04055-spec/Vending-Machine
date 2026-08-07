@@ -1,0 +1,48 @@
+module vending_machine(
+    input clk,
+    input reset,
+    input [1:0] coin,
+    output reg dispense,
+    output reg [4:0] change
+);
+
+reg [5:0] balance;
+
+always @(posedge clk or posedge reset)
+begin
+
+    if(reset)
+    begin
+        balance <= 0;
+        dispense <= 0;
+        change <= 0;
+    end
+
+    else
+    begin
+
+        dispense <= 0;
+        change <= 0;
+
+        case(coin)
+
+            2'b01: balance <= balance + 5;
+            2'b10: balance <= balance + 10;
+            2'b11: balance <= balance + 20;
+
+            default: balance <= balance;
+
+        endcase
+
+        if(balance >= 20)
+        begin
+            dispense <= 1;
+            change <= balance - 20;
+            balance <= 0;
+        end
+
+    end
+
+end
+
+endmodule
